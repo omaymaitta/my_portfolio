@@ -1,4 +1,4 @@
-# Omayma Ittaqi — Flutter Portfolio 🚀
+# Omayma Ittaqi — Flutter Portfolio
 
 A modern and interactive **portfolio application** built with Flutter, showcasing my projects, skills, and experience. Designed to deliver a smooth and engaging user experience across mobile and web platforms.
 
@@ -48,7 +48,7 @@ Git installed
 
 Installation & Running
 # Clone the repository
-git clone https://github.com/omaymaitta/omayma_portfolio.git
+git clone https://github.com/omaymaitta/my_portfolio.git
 
 # Navigate into the project directory
 cd omayma_portfolio
