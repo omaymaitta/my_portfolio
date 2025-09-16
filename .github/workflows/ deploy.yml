@@ -36,7 +36,7 @@ jobs:
       # Build WITHOUT service worker to avoid stale caches on Pages
       - name: Build Flutter Web (no SW, base href for project page)
         run: |
-          flutter build web --release --pwa-strategy=none --base-href=/My-Portfolio/
+          flutter build web --release --pwa-strategy=none --base-href=/my_portfolio/
 
       # Deploy build/web/ to gh-pages
       - name: Deploy to gh-pages
