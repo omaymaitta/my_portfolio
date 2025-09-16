@@ -73265,8 +73265,8 @@ if(n)s=3
 else s=m?2:1
 r=(o-20*(s-1))/s
 o=this.a
-q=A.ix(A.qK(o.Yb(a,B.MZ,"../lib/assets/projects/MyBookShelfCover.png",p,"../lib/assets/projects/MyBookShelf.jpg",200,u.h),B.EP),p,r)
-return A.adj(B.bM,A.c([q,A.ix(A.qK(o.Ya(a,B.N0,p,"../lib/assets/projects/meteo-logo.png","https://github.com/omaymaitta/MeteoAPI","../lib/assets/videos/appMeteoDemo.mp4"),B.cu),p,r),A.ix(A.qK(o.GX(a,B.N_,p,"../lib/assets/projects/OCP-logo.png",200,u.m),B.m4),p,r),A.ix(A.qK(o.GX(a,B.MY,p,"../lib/assets/projects/lsAgency.png",200,u.d),B.m4),p,r)],t.p),20,20)},
+q=A.ix(A.qK(o.Yb(a,B.N0,"lib/assets/projects/MyBookShelfCover.png",p,"lib/assets/projects/MyBookShelf.jpg",200,u.h),B.EP),p,r)
+return A.adj(B.bM,A.c([q,A.ix(A.qK(o.Ya(a,B.N_,p,"lib/assets/projects/meteo-logo.png","https://github.com/omaymaitta/MeteoAPI","lib/assets/videos/appMeteoDemo.mp4"),B.cu),p,r),A.ix(A.qK(o.GX(a,B.MY,p,"lib/assets/projects/OCP-logo.png",200,u.m),B.m4),p,r),A.ix(A.qK(o.GX(a,B.MZ,p,"lib/assets/projects/lsAgency.png",200,u.d),B.m4),p,r)],t.p),20,20)},
 $S:457}
 A.a6K.prototype={
 $0(){return this.a.uk(this.b)},
@@ -82685,10 +82685,10 @@ B.wy=new A.oR(2,"inAppBrowserView")
 B.MW=new A.oR(3,"externalApplication")
 B.wz=new A.oR(4,"externalNonBrowserApplication")
 B.MX=new A.rC(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.MY=new A.rD("LS-Agency - Car Rental Management System","Professional Project","2023 - 2025","Mobile application built with Flutter to manage clients, vehicles, reservations, invoices, payments, refunds, and financial operations",u.d,"../lib/assets/projects/lsAgency.png")
-B.MZ=new A.rD("My BookShelf","Semester Project","06/2022","An Android application to help users organize and read their digital books and documents with ease.",u.h,"../lib/assets/projects/MyBookShelf.jpg")
-B.N_=new A.rD("Backend Web Application","Internship Project at OCP Group","07/2022 - 08/2022","Web-based administration and management platform to automate network operations (Python/Django).",u.m,"../lib/assets/projects/OCP-logo.png")
-B.N0=new A.rD("Simple Weather App","Personal Project","05/2022","A lightweight Android application to display weather information for any city.","https://github.com/omaymaitta/MeteoAPI","../lib/assets/projects/meteo-logo.png")
+B.MY=new A.rD("Backend Web Application","Internship Project at OCP Group","07/2022 - 08/2022","Web-based administration and management platform to automate network operations (Python/Django).",u.m,"lib/assets/projects/OCP-logo.png")
+B.MZ=new A.rD("LS-Agency - Car Rental Management System","Professional Project","2023 - 2025","Mobile application built with Flutter to manage clients, vehicles, reservations, invoices, payments, refunds, and financial operations",u.d,"lib/assets/projects/lsAgency.png")
+B.N_=new A.rD("Simple Weather App","Personal Project","05/2022","A lightweight Android application to display weather information for any city.","https://github.com/omaymaitta/MeteoAPI","lib/assets/projects/meteo-logo.png")
+B.N0=new A.rD("My BookShelf","Semester Project","06/2022","An Android application to help users organize and read their digital books and documents with ease.",u.h,"lib/assets/projects/MyBookShelf.jpg")
 B.N1=new A.yL(null,null,null,null,null,null,null)
 B.dZ=new A.bf(8,8)
 B.N2=new A.bf(1.5,1.5)
