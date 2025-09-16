@@ -339,7 +339,7 @@ class PortfolioHomePage extends StatelessWidget {
                     child: _buildProjectCard(
                       context,
                       ProfileData.projects[0],
-                      coverImg: '../lib/assets/projects/MyBookShelfCover.png',
+                      coverImg: 'lib/assets/projects/MyBookShelfCover.png',
                       imagePath: ProfileData.projects[0].image,
                       projectLink: ProfileData.projects[0].link,
                       gitlabLink: ProfileData.projects[0].gitlabLink,
@@ -355,10 +355,10 @@ class PortfolioHomePage extends StatelessWidget {
                       context,
                       ProfileData.projects[1],
                       imagePath: ProfileData.projects[1].image ??
-                          '../lib/assets/projects/meteo-logo.png',
+                          'lib/assets/projects/meteo-logo.png',
                       projectLink: ProfileData.projects[1].link,
                       gitlabLink: ProfileData.projects[1].gitlabLink,
-                      videoPath:'../lib/assets/videos/appMeteoDemo.mp4' ,
+                      videoPath:'lib/assets/videos/appMeteoDemo.mp4' ,
                     ),
                   ),
                 ),

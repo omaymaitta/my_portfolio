@@ -124,7 +124,7 @@ class ProfileData {
       summary:
       'An Android application to help users organize and read their digital books and documents with ease.',
       link: 'https://github.com/omaymaitta/BibliothequeNumerique',
-      image: '../lib/assets/projects/MyBookShelf.jpg',
+      image: 'lib/assets/projects/MyBookShelf.jpg',
     ),
     Project(
       name: 'Simple Weather App',
@@ -133,7 +133,7 @@ class ProfileData {
       summary:
       'A lightweight Android application to display weather information for any city.',
       link: 'https://github.com/omaymaitta/MeteoAPI',
-      image: '../lib/assets/projects/meteo-logo.png',
+      image: 'lib/assets/projects/meteo-logo.png',
     ),
     Project(
       name: 'Backend Web Application',
@@ -141,7 +141,7 @@ class ProfileData {
       date: '07/2022 - 08/2022',
       summary: 'Web-based administration and management platform to automate network operations (Python/Django).',
       link: 'https://github.com/omaymaitta/OcpNetworkApp',
-      image: '../lib/assets/projects/OCP-logo.png',
+      image: 'lib/assets/projects/OCP-logo.png',
     ),
     Project(
       name: 'LS-Agency - Car Rental Management System',
@@ -149,7 +149,7 @@ class ProfileData {
       date: '2023 - 2025',
       summary: 'Mobile application built with Flutter to manage clients, vehicles, reservations, invoices, payments, refunds, and financial operations',
       link: 'https://play.google.com/store/apps/details?id=ma.tt.locasmart.lsagency&pcampaignid=web_share',
-      image: '../lib/assets/projects/lsAgency.png',
+      image: 'lib/assets/projects/lsAgency.png',
     ),
   ];
 

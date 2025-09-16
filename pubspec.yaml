@@ -73,6 +73,7 @@ flutter:
     - lib/assets/projects/OCP-logo.png
     - lib/assets/videos/appMeteoDemo.MP4
     - lib/assets/projects/meteo-logo.png
+    - lib/assets/projects/lsAgency.png
 
 
 
