@@ -331,66 +331,28 @@ class PortfolioHomePage extends StatelessWidget {
             return Wrap(
               spacing: gap,
               runSpacing: gap,
-              children: [
-                SizedBox(
-                  width: cardWidth,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 450),
-                    child: _buildProjectCard(
-                      context,
-                      ProfileData.projects[0],
-                      coverImg: 'lib/assets/projects/MyBookShelfCover.png',
-                      imagePath: ProfileData.projects[0].image,
-                      projectLink: ProfileData.projects[0].link,
-                      gitlabLink: ProfileData.projects[0].gitlabLink,
-                      mediaSize: 200,
+              children: ProfileData.projects.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final project = entry.value;
+
+                  return SizedBox(
+                    width: cardWidth,
+                    child: FadeInUp(
+                      duration: Duration(milliseconds: 450 + (index * 150)),
+                      child: _buildProjectCard(
+                        context,
+                        project,
+                        coverImg: project.coverImg,
+                        imagePath: project.image,
+                        projectLink: project.link,
+                        gitlabLink: project.gitlabLink,
+                        videoPath: project.videoPath,
+                        mediaSize: 200,
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  width: cardWidth,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 600),
-                    child: _buildProjectCard(
-                      context,
-                      ProfileData.projects[1],
-                      imagePath: ProfileData.projects[1].image ??
-                          'lib/assets/projects/meteo-logo.png',
-                      projectLink: ProfileData.projects[1].link,
-                      gitlabLink: ProfileData.projects[1].gitlabLink,
-                      videoPath:'lib/assets/videos/appMeteoDemo.mp4' ,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: cardWidth,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 750),
-                    child: _buildProjectCard(
-                      context,
-                      ProfileData.projects[2],
-                      imagePath: ProfileData.projects[2].image,
-                      projectLink: ProfileData.projects[2].link,
-                      gitlabLink: ProfileData.projects[2].gitlabLink,
-                      mediaSize: 200,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: cardWidth,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 750),
-                    child: _buildProjectCard(
-                      context,
-                      ProfileData.projects[3],
-                      imagePath: ProfileData.projects[3].image,
-                      projectLink: ProfileData.projects[3].link,
-                      gitlabLink: ProfileData.projects[3].gitlabLink,
-                      mediaSize: 200,
-                    ),
-                  ),
-                ),
-              ],
+                  );
+                }).toList(),
+
             );
           },
         ),

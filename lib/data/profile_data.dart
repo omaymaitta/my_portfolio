@@ -125,6 +125,7 @@ class ProfileData {
       'An Android application to help users organize and read their digital books and documents with ease.',
       link: 'https://github.com/omaymaitta/BibliothequeNumerique',
       image: 'lib/assets/projects/MyBookShelf.jpg',
+      coverImg: 'lib/assets/projects/MyBookShelfCover.png',
     ),
     Project(
       name: 'Simple Weather App',
@@ -134,6 +135,7 @@ class ProfileData {
       'A lightweight Android application to display weather information for any city.',
       link: 'https://github.com/omaymaitta/MeteoAPI',
       image: 'lib/assets/projects/meteo-logo.png',
+      videoPath: 'lib/assets/videos/appMeteoDemo.mp4',
     ),
     Project(
       name: 'Backend Web Application',
@@ -144,12 +146,36 @@ class ProfileData {
       image: 'lib/assets/projects/OCP-logo.png',
     ),
     Project(
-      name: 'LS-Agency - Car Rental Management System',
+      name: 'LS-Agency - Vehicle Rental Management',
       role: 'Professional Project',
-      date: '2023 - 2025',
+      date: '09/2023 - 08/2025',
       summary: 'Mobile application built with Flutter to manage clients, vehicles, reservations, invoices, payments, refunds, and financial operations',
       link: 'https://play.google.com/store/apps/details?id=ma.tt.locasmart.lsagency&pcampaignid=web_share',
       image: 'lib/assets/projects/lsAgency.png',
+    ),
+    Project(
+      name: 'Locasmart Backoffice - Vehicle Rental Management',
+      role: 'Professional Project',
+      date: '10/2024 - 07/2025',
+      summary: 'Web-based backoffice platform that allows agencies of any size to manage their operations anytime, anywhere.',
+      link: 'https://www.t-t.ma/produits-et-services/loca-smart-gestion-location-de-voitures/',
+      image: 'lib/assets/projects/lsAgency.png',
+    ),
+    Project(
+      name: 'RentYno - Web',
+      role: 'Professional Project',
+      date: '06/2024 - 02/2025',
+      summary: 'Web platform built with PHP, HTML, CSS, and JavaScript to compare car rental prices from multiple agencies in real time and make reservations directly',
+      link: 'https://rentyno.com/',
+      image: 'lib/assets/projects/rentyno.png',
+    ),
+    Project(
+      name: 'RentYno - Mobile',
+      role: 'Professional Project',
+      date: '07/2025 - 08/2025',
+      summary: 'Mobile application built with Flutter enabling users to browse and compare car rental offers from various agencies and book their reservations through a smooth and intuitive interface.',
+      link: 'https://play.google.com/store/apps/details?id=ma.tt.locasmart.rentyno&pcampaignid=web_share',
+      image: 'lib/assets/projects/rentyno.png',
     ),
   ];
 
@@ -224,7 +250,7 @@ class Experience {
 
 class Project {
   final String name, role, date, summary;
-  final String? link, gitlabLink, image;
+  final String? link, gitlabLink, image,coverImg,videoPath;
   const Project({
     required this.name,
     required this.role,
@@ -233,6 +259,8 @@ class Project {
     this.link,
     this.gitlabLink,
     this.image,
+    this.coverImg,
+    this.videoPath
   });
 }
 
