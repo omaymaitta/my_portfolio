@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
 import '../data/profile_data.dart';
 import '../widgets/animated_tagline.dart';
+import '../widgets/courses_section.dart';
 import '../widgets/education_section.dart';
 import '../widgets/experience_section.dart';
 import '../widgets/skills_section.dart';
@@ -528,14 +529,14 @@ class PortfolioHomePage extends StatelessWidget {
                     _buildProjectsSection(context),
 
                     const SizedBox(height: 36),
-                    /*Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: _sectionHeader("Courses",
-                          icon: Icons.school_outlined),
+                          icon: Icons.menu_book_outlined),
                     ),
                     const SizedBox(height: 12),
                     const CoursesSection(),
-                    const SizedBox(height: 24),*/
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),

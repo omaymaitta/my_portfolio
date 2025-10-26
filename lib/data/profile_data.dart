@@ -198,10 +198,22 @@ class ProfileData {
   // ===================== COURSES =====================
   static const courses = [
     Course(
-      title: 'title',
-      provider: 'Provider',
-      date: '01/2025',
-      image: 'lib/assets/courses/img.png',
+      title: 'NDG Linux Unhatched',
+      provider: 'Cisco Networking Academy',
+      date: '20 May 2021',
+      image: 'lib/assets/courses/Partner-_NDG_Linux_Unhatched_certificate_omaymaittaqi-gmail-com.pdf',
+    ),
+    Course(
+      title: 'IT Essentials: PC Hardware and Software',
+      provider: 'Cisco Networking Academy',
+      date: '26 Jun 2021',
+      image: 'lib/assets/courses/IT_Essentials_certificate_omaymaittaqi-gmail-com.pdf',
+    ),
+    Course(
+      title: 'Cybersecurity Essentials',
+      provider: 'Cisco Networking Academy',
+      date: '04 Jan 2023',
+      image: 'lib/assets/courses/Cybersecurity_Essentials_certificate_omaymaittaqi-gmail.pdf',
     )
   ];
 

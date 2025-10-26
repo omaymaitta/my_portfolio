@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:pdfx/pdfx.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+import '../data/profile_data.dart';
 
 class CoursesSection extends StatefulWidget {
   const CoursesSection({super.key});
@@ -18,16 +21,20 @@ class _CoursesSectionState extends State<CoursesSection> {
   Timer? _autoTimer;
   Timer? _resumeDelay;
 
-  final List<Map<String, String>> courses = [
-    {"title": "", "file": ""},
-  ];
-
+  final Map<String, Future<PdfPageImage?>> _thumbnailFutures = {};
 
   @override
   void initState() {
     super.initState();
     _controller = PageController(viewportFraction: 0.85);
     _startAutoplay();
+
+    for (var course in ProfileData.courses) {
+      final file = course.image;
+      if (file != null && file.toLowerCase().endsWith('.pdf')) {
+        _getThumbnail(file).ignore();
+      }
+    }
   }
 
   @override
@@ -35,15 +42,16 @@ class _CoursesSectionState extends State<CoursesSection> {
     _cancelAutoplay();
     _cancelResumeDelay();
     _controller.dispose();
+    _thumbnailFutures.clear();
     super.dispose();
   }
 
   // ===== Autoplay logic =====
   void _startAutoplay() {
-    if (_autoTimer?.isActive == true || courses.isEmpty) return;
+    if (_autoTimer?.isActive == true || ProfileData.courses.isEmpty) return;
     _autoTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       if (!_controller.hasClients) return;
-      final next = (_index + 1) % courses.length;
+      final next = (_index + 1) % ProfileData.courses.length;
       _controller.animateToPage(
         next,
         duration: const Duration(milliseconds: 600),
@@ -72,9 +80,34 @@ class _CoursesSectionState extends State<CoursesSection> {
     _resumeDelay = Timer(delay, _startAutoplay);
   }
 
+  Future<PdfPageImage?> _renderFirstPage(String assetPath) async {
+    try {
+      final document = await PdfDocument.openAsset(assetPath);
+      final page = await document.getPage(1);
+      final pageImage = await page.render(
+        width: 600,
+        height: 800,
+        format: PdfPageImageFormat.jpeg,
+        backgroundColor: '#FFFFFF',
+      );
+      await page.close();
+      await document.close();
+      return pageImage;
+    } catch (e) {
+      debugPrint('PDF render error: $e');
+      return null;
+    }
+  }
+
+  Future<PdfPageImage?> _getThumbnail(String assetPath) {
+    final key = assetPath;
+    _thumbnailFutures[key] ??= _renderFirstPage(assetPath);
+    return _thumbnailFutures[key]!;
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (courses.isEmpty) {
+    if (ProfileData.courses.isEmpty) {
       return const Center(child: Text("No courses available"));
     }
 
@@ -88,15 +121,6 @@ class _CoursesSectionState extends State<CoursesSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Courses',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black,
-          ),
-        ),
-        const SizedBox(height: 16),
-
         // ===== Carousel =====
         SizedBox(
           height: height,
@@ -106,19 +130,22 @@ class _CoursesSectionState extends State<CoursesSection> {
             onPanEnd: (_) => _resumeAfterDelay(),
             child: PageView.builder(
               controller: _controller,
-              itemCount: courses.length,
+              itemCount: ProfileData.courses.length,
               onPageChanged: (i) => setState(() => _index = i),
               itemBuilder: (context, i) {
-                final course = courses[i];
+                final course = ProfileData.courses[i];
+                final isPdf = course.image!.toLowerCase().endsWith(".pdf");
+                final thumbnailFuture = isPdf ? _getThumbnail(course.image!) : null;
                 return GestureDetector(
-                  onTap: () => _openCourse(context, course["file"]!, course["title"]!),
+                  onTap: () => _openCourse(context, course.image!, course.title),
                   child: AnimatedScale(
                     scale: i == _index ? 1.0 : 0.93,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut,
                     child: _ImageCard(
-                      filePath: course["file"]!,
-                      title: course["title"]!,
+                      filePath: course.image!,
+                      title: course.title,
+                      thumbnailFuture: thumbnailFuture,
                     ),
                   ),
                 );
@@ -134,7 +161,7 @@ class _CoursesSectionState extends State<CoursesSection> {
           child: Wrap(
             spacing: 6,
             children: List.generate(
-              courses.length,
+              ProfileData.courses.length,
                   (i) => GestureDetector(
                 onTap: () {
                   _pauseForUser();
@@ -150,9 +177,7 @@ class _CoursesSectionState extends State<CoursesSection> {
                   height: 8,
                   width: i == _index ? 24 : 8,
                   decoration: BoxDecoration(
-                    color: i == _index
-                        ? Colors.tealAccent
-                        : dotColor.withOpacity(0.35),
+                    color: i == _index ? Colors.tealAccent : dotColor.withOpacity(0.35),
                     borderRadius: BorderRadius.circular(999),
                   ),
                 ),
@@ -187,7 +212,13 @@ class _CoursesSectionState extends State<CoursesSection> {
 class _ImageCard extends StatelessWidget {
   final String filePath;
   final String title;
-  const _ImageCard({required this.filePath, required this.title});
+  final Future<PdfPageImage?>? thumbnailFuture;
+
+  const _ImageCard({
+    required this.filePath,
+    required this.title,
+    this.thumbnailFuture,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -211,18 +242,10 @@ class _ImageCard extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              filePath,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                color: Colors.grey.shade800,
-                child: const Center(
-                  child: Icon(Icons.broken_image,
-                      color: Colors.white54, size: 48),
-                ),
-              ),
-            ),
+            child: _buildThumbnail(context),
           ),
+
+          // ---------- Dark gradient overlay  ----------
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -234,6 +257,8 @@ class _ImageCard extends StatelessWidget {
               ),
             ),
           ),
+
+          // ---------- Title----------
           Positioned(
             left: 14,
             bottom: 14,
@@ -259,9 +284,56 @@ class _ImageCard extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildThumbnail(BuildContext context) {
+    final isPdf = filePath.toLowerCase().endsWith('.pdf');
+    if (!isPdf) {
+      // For non-PDF
+      return Image.asset(
+        filePath,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _errorPlaceholder(),
+      );
+    } else {
+      // For PDF: future
+      return FutureBuilder<PdfPageImage?>(
+        future: thumbnailFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData && snapshot.data != null) {
+              return Image.memory(
+                snapshot.data!.bytes,
+                fit: BoxFit.cover,
+                gaplessPlayback: true,
+              );
+            } else {
+              // PDF failed to render
+              return _errorPlaceholder();
+            }
+          }
+          // Loading state
+          return Container(
+            color: Colors.grey.shade800,
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.white54),
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  Widget _errorPlaceholder() {
+    return Container(
+      color: Colors.grey.shade800,
+      child: const Center(
+        child: Icon(Icons.picture_as_pdf, color: Colors.white54, size: 48),
+      ),
+    );
+  }
 }
 
-///  PDF Viewer Page
+/// PDF Viewer Page
 class PdfViewerPage extends StatelessWidget {
   final String filePath;
   final String title;
