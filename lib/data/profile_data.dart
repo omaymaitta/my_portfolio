@@ -198,10 +198,16 @@ class ProfileData {
   // ===================== COURSES =====================
   static const courses = [
     Course(
-      title: 'NDG Linux Unhatched',
+      title: 'Cybersecurity Essentials',
       provider: 'Cisco Networking Academy',
-      date: '20 May 2021',
-      image: 'lib/assets/courses/Partner-_NDG_Linux_Unhatched_certificate_omaymaittaqi-gmail-com.pdf',
+      date: '04 Jan 2023',
+      image: 'lib/assets/courses/Cybersecurity_Essentials_certificate_omaymaittaqi-gmail.pdf',
+    ),
+    Course(
+      title: 'MongoDB Basics',
+      provider: 'MongoDB University',
+      date: '21 Jan 2022',
+      image: 'lib/assets/courses/M001_proof_of_completion.jpg',
     ),
     Course(
       title: 'IT Essentials: PC Hardware and Software',
@@ -210,10 +216,10 @@ class ProfileData {
       image: 'lib/assets/courses/IT_Essentials_certificate_omaymaittaqi-gmail-com.pdf',
     ),
     Course(
-      title: 'Cybersecurity Essentials',
+      title: 'NDG Linux Unhatched',
       provider: 'Cisco Networking Academy',
-      date: '04 Jan 2023',
-      image: 'lib/assets/courses/Cybersecurity_Essentials_certificate_omaymaittaqi-gmail.pdf',
+      date: '20 May 2021',
+      image: 'lib/assets/courses/Partner-_NDG_Linux_Unhatched_certificate_omaymaittaqi-gmail-com.pdf',
     )
   ];
 

@@ -21,6 +21,7 @@ class SkillsSection extends StatelessWidget {
     // APIs / Data
     _Skill(name: "REST APIs", level: 0.80),
     _Skill(name: "MySQL", level: 0.80),
+    _Skill(name: "MongoDB", level: 0.50),
 
     // Frontend Web
     _Skill(name: "React", level: 0.50),
