@@ -8,13 +8,24 @@ import '../widgets/animated_tagline.dart';
 import '../widgets/courses_section.dart';
 import '../widgets/education_section.dart';
 import '../widgets/experience_section.dart';
+import '../widgets/nav_bar.dart';
 import '../widgets/skills_section.dart';
 import 'package:video_player/video_player.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
-
-class PortfolioHomePage extends StatelessWidget {
+class PortfolioHomePage extends StatefulWidget {
   const PortfolioHomePage({super.key});
+
+  @override
+  State<PortfolioHomePage> createState() => _PortfolioHomePageState();
+}
+
+class _PortfolioHomePageState extends State<PortfolioHomePage> {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   // palette
   static const _bgGradient = LinearGradient(
@@ -22,6 +33,16 @@ class PortfolioHomePage extends StatelessWidget {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+  final ScrollController _scrollController = ScrollController();
+
+  final GlobalKey _aboutmeKey = GlobalKey();
+  final GlobalKey _expKey = GlobalKey();
+  final GlobalKey _eduKey = GlobalKey();
+  final GlobalKey _techKey = GlobalKey();
+  final GlobalKey _softKey = GlobalKey();
+  final GlobalKey _langKey = GlobalKey();
+  final GlobalKey _projKey = GlobalKey();
+  final GlobalKey _courseKey = GlobalKey();
 
   static const _glassBorder = BorderSide(color: Colors.white24);
   static final _glassDecoration = BoxDecoration(
@@ -36,7 +57,6 @@ class PortfolioHomePage extends StatelessWidget {
       ),
     ],
   );
-
   // 🔹 Launch URL (with UX feedback)
   Future<void> _launchURL(BuildContext context, String url) async {
     final Uri uri = Uri.parse(url);
@@ -48,9 +68,9 @@ class PortfolioHomePage extends StatelessWidget {
       }
     } else {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open: $url')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Could not open: $url')));
       }
     }
   }
@@ -64,11 +84,11 @@ class PortfolioHomePage extends StatelessWidget {
 
   // 🔹 Social button (hover/focus/tooltip/semantics)
   Widget _buildSocialButton(
-      BuildContext context, {
-        required String assetPath,
-        required String tooltip,
-        required String url,
-      }) {
+    BuildContext context, {
+    required String assetPath,
+    required String tooltip,
+    required String url,
+  }) {
     return FocusableActionDetector(
       mouseCursor: SystemMouseCursors.click,
       child: Tooltip(
@@ -97,8 +117,10 @@ class PortfolioHomePage extends StatelessWidget {
                 height: 28,
                 width: 28,
                 fit: BoxFit.contain,
-                colorFilter:
-                const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),
@@ -108,41 +130,59 @@ class PortfolioHomePage extends StatelessWidget {
   }
 
   // 🔹 Section header
-  Widget _sectionHeader(String title, {IconData? icon}) {
-    return Row(
-      children: [
-        if (icon != null)
-          Icon(icon, color: Colors.tealAccent, size: 22),
-        if (icon != null) const SizedBox(width: 10),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+  /// Section header – now accepts an optional key
+  Widget _buildSectionHeader(String title, {IconData? icon, Key? key}) {
+    return Container(
+      key: key,
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: Row(
+        children: [
+          if (icon != null) Icon(icon, color: Colors.tealAccent, size: 22),
+          if (icon != null) const SizedBox(width: 10),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
+  }
+
+  /// Safe scroll-to-section
+  void _scrollTo(GlobalKey key) {
+    final ctx = key.currentContext;
+    if (ctx != null) {
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+        alignment: 0.05,
+      );
+    }
   }
 
   // 🔹 Projects Card
   Widget _buildProjectCard(
-      BuildContext context,
-      Project project, {
-        String? imagePath,
-        String? videoPath,
-        String? projectLink,
-        String? gitlabLink,
-        double? mediaSize,
-        String? coverImg
-      }) {
+    BuildContext context,
+    Project project, {
+    String? imagePath,
+    String? videoPath,
+    String? projectLink,
+    String? gitlabLink,
+    double? mediaSize,
+    String? coverImg,
+  }) {
     return _HoverScale(
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () async {
-            if(coverImg!=null){
+            if (coverImg != null) {
               await showDialog(
                 context: context,
                 barrierColor: Colors.black.withOpacity(0.9),
@@ -155,15 +195,12 @@ class PortfolioHomePage extends StatelessWidget {
                       panEnabled: true,
                       minScale: 0.5,
                       maxScale: 4,
-                      child: Image.asset(
-                        coverImg,
-                        fit: BoxFit.contain,
-                      ),
+                      child: Image.asset(coverImg, fit: BoxFit.contain),
                     ),
                   ),
                 ),
               );
-            }else{
+            } else {
               if (videoPath != null) {
                 await showDialog(
                   context: context,
@@ -189,14 +226,13 @@ class PortfolioHomePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                   child: imagePath != null
                       ? Image.asset(
-                    imagePath,
-                    height: mediaSize ?? 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _imageFallback(
-                      height: mediaSize ?? 200,
-                    ),
-                  )
+                          imagePath,
+                          height: mediaSize ?? 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) =>
+                              _imageFallback(height: mediaSize ?? 200),
+                        )
                       : _imageFallback(height: mediaSize ?? 200),
                 ),
                 const SizedBox(height: 12),
@@ -262,12 +298,13 @@ class PortfolioHomePage extends StatelessWidget {
   }
 
   // 🔹 Text button
-  Widget _primaryTextButton({required String label, required VoidCallback onTap}) {
+  Widget _primaryTextButton({
+    required String label,
+    required VoidCallback onTap,
+  }) {
     return TextButton(
       onPressed: onTap,
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.lightBlueAccent,
-      ),
+      style: TextButton.styleFrom(foregroundColor: Colors.lightBlueAccent),
       child: Text(
         label,
         style: const TextStyle(
@@ -280,11 +317,11 @@ class PortfolioHomePage extends StatelessWidget {
 
   // 🔹 Small pill button with SVG
   Widget _pillLinkButton(
-      BuildContext context, {
-        required String iconAsset,
-        required String label,
-        required VoidCallback onTap,
-      }) {
+    BuildContext context, {
+    required String iconAsset,
+    required String label,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
@@ -302,8 +339,10 @@ class PortfolioHomePage extends StatelessWidget {
               iconAsset,
               height: 18,
               width: 18,
-              colorFilter:
-              const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
             ),
             const SizedBox(width: 8),
             Text(label, style: const TextStyle(color: Colors.white)),
@@ -318,21 +357,23 @@ class PortfolioHomePage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader("Projects", icon: Icons.work_outline),
+        _buildSectionHeader("Projects", icon: Icons.work_outline),
         const SizedBox(height: 16),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final isThreeCol = constraints.maxWidth >= 1180;
-            final isTwoCol = constraints.maxWidth >= 780 && !isThreeCol;
-            final columns = isThreeCol ? 3 : (isTwoCol ? 2 : 1);
-            final gap = 20.0;
-            final cardWidth =
-                (constraints.maxWidth - gap * (columns - 1)) / columns;
+        Padding(
+          padding: const EdgeInsets.only(left:10, right: 10),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isThreeCol = constraints.maxWidth >= 1180;
+              final isTwoCol = constraints.maxWidth >= 780 && !isThreeCol;
+              final columns = isThreeCol ? 3 : (isTwoCol ? 2 : 1);
+              final gap = 20.0;
+              final cardWidth =
+                  (constraints.maxWidth - gap * (columns - 1)) / columns;
 
-            return Wrap(
-              spacing: gap,
-              runSpacing: gap,
-              children: ProfileData.projects.asMap().entries.map((entry) {
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children: ProfileData.projects.asMap().entries.map((entry) {
                   final index = entry.key;
                   final project = entry.value;
 
@@ -353,9 +394,9 @@ class PortfolioHomePage extends StatelessWidget {
                     ),
                   );
                 }).toList(),
-
-            );
-          },
+              );
+            },
+          ),
         ),
       ],
     );
@@ -391,156 +432,269 @@ class PortfolioHomePage extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(gradient: _bgGradient),
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1080),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // 🔝 HEADER
-                    ZoomIn(
-                      duration: const Duration(milliseconds: 700),
-                      child: _HeroAvatar(),
-                    ),
-                    const SizedBox(height: 18),
-                    Text(
-                      ProfileData.name,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 38,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    const AnimatedTagline(),
-                    const AnimatedSubtitle(),
-                    const SizedBox(height: 18),
-                    _profileIntro(),
-                    const SizedBox(height: 20),
-
-                    // 🔹 Socials
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        _buildSocialButton(
-                          context,
-                          assetPath: 'lib/assets/icons/icons8-github-100.svg',
-                          tooltip: 'GitHub',
-                          url: ProfileData.github,
-                        ),
-                        _buildSocialButton(
-                          context,
-                          assetPath: 'lib/assets/icons/icons8-linkedin-100.svg',
-                          tooltip: 'LinkedIn',
-                          url: ProfileData.linkedin,
-                        ),
-                        _buildSocialButton(
-                          context,
-                          assetPath: 'lib/assets/icons/icons8-gitlab-100.svg',
-                          tooltip: 'GitLab',
-                          url: ProfileData.gitlab,
-                        ),
-                        _buildSocialButton(
-                          context,
-                          assetPath: 'lib/assets/icons/icons8-gmail-96.svg',
-                          tooltip: 'Email',
-                          url: 'mailto:${ProfileData.email}',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 18),
-
-                    // 🔹 View My CV button
-                    ElevatedButton.icon(
-                      onPressed: () => _openCV(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightBlueAccent,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 18, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 3,
-                      ),
-                      icon: const Icon(Icons.picture_as_pdf, size: 20),
-                      label: const Text(
-                        "View My CV",
-                        style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-
-                    const SizedBox(height: 36),
-                    // Experience
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _sectionHeader("Experience",
-                          icon: Icons.badge_outlined),
-                    ),
-                    const SizedBox(height: 12),
-                    const ExperienceSection(),
-
-                    const SizedBox(height: 36),
-                    //Education
-                    Align(
-                      child: _sectionHeader("Education",
-                          icon: Icons.school_outlined),
-                    ),
-                    const SizedBox(height: 12),
-                    const EducationSection(),
-                    const SizedBox(height: 36),
-                    // Skills
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _sectionHeader("Technical Skills",
-                          icon: Icons.code_outlined),
-                    ),
-                    const SizedBox(height: 12),
-                    const SkillsSection(),
-
-                    const SizedBox(height: 36),
-                    // Soft Skills
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _sectionHeader("Soft Skills",
-                          icon: Icons.handshake_outlined),
-                    ),
-                    const SizedBox(height: 12),
-                    const SoftSkillsSection(),
-
-                    const SizedBox(height: 36),
-                    // Languages
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _sectionHeader("Languages",
-                          icon: Icons.language_outlined),
-                    ),
-                    const SizedBox(height: 12),
-                    const LanguagesSection(),
-
-                    const SizedBox(height: 36),
-                    _buildProjectsSection(context),
-
-                    const SizedBox(height: 36),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _sectionHeader("Courses",
-                          icon: Icons.menu_book_outlined),
-                    ),
-                    const SizedBox(height: 12),
-                    const CoursesSection(),
-                    const SizedBox(height: 24),
-                  ],
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              // ────── NAV BAR ──────
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: Colors.grey[900]!.withOpacity(0.95),
+                elevation: 4,
+                flexibleSpace: NavBar(
+                  onTap: (section) {
+                    switch (section) {
+                      case 'about':
+                        _scrollTo(_aboutmeKey);
+                        break;
+                        case 'exp':
+                        _scrollTo(_expKey);
+                        break;
+                      case 'edu':
+                        _scrollTo(_eduKey);
+                        break;
+                      case 'tech':
+                        _scrollTo(_techKey);
+                        break;
+                      case 'soft':
+                        _scrollTo(_softKey);
+                        break;
+                      case 'lang':
+                        _scrollTo(_langKey);
+                        break;
+                      case 'proj':
+                        _scrollTo(_projKey);
+                        break;
+                      case 'course':
+                        _scrollTo(_courseKey);
+                        break;
+                    }
+                  },
                 ),
               ),
-            ),
+
+              // ────── MAIN INTRO ──────
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 28,
+                ),
+                sliver: SliverToBoxAdapter(
+                  key: _aboutmeKey,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1080),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Avatar
+                          ZoomIn(
+                            duration: const Duration(milliseconds: 700),
+                            child: _HeroAvatar(),
+                          ),
+                          const SizedBox(height: 18),
+
+                          // Name
+                          Text(
+                            ProfileData.name,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 38,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+
+                          // Taglines
+                          const AnimatedTagline(),
+                          const AnimatedSubtitle(),
+                          const SizedBox(height: 18),
+
+                          // Intro paragraph
+                          _profileIntro(),
+                          const SizedBox(height: 20),
+
+                          // Social buttons
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: [
+                              _buildSocialButton(
+                                context,
+                                assetPath:
+                                    'lib/assets/icons/icons8-github-100.svg',
+                                tooltip: 'GitHub',
+                                url: ProfileData.github,
+                              ),
+                              _buildSocialButton(
+                                context,
+                                assetPath:
+                                    'lib/assets/icons/icons8-linkedin-100.svg',
+                                tooltip: 'LinkedIn',
+                                url: ProfileData.linkedin,
+                              ),
+                              _buildSocialButton(
+                                context,
+                                assetPath:
+                                    'lib/assets/icons/icons8-gitlab-100.svg',
+                                tooltip: 'GitLab',
+                                url: ProfileData.gitlab,
+                              ),
+                              _buildSocialButton(
+                                context,
+                                assetPath:
+                                    'lib/assets/icons/icons8-gmail-96.svg',
+                                tooltip: 'Email',
+                                url: 'mailto:${ProfileData.email}',
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 18),
+
+                          // 🔹 View My CV button
+                          ElevatedButton.icon(
+                            onPressed: () => _openCV(context),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlueAccent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 3,
+                            ),
+                            icon: const Icon(Icons.picture_as_pdf, size: 20),
+                            label: const Text(
+                              "View My CV",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 36),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ────── EXPERIENCE ──────
+              SliverToBoxAdapter(
+                key: _expKey,
+                child: _buildSectionHeader(
+                  "Experience",
+                  icon: Icons.badge_outlined,
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+
+                  child: ExperienceSection(),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 36)),
+
+              // ────── EDUCATION ──────
+              SliverToBoxAdapter(
+                key: _eduKey,
+                child: _buildSectionHeader(
+                  "Education",
+                  icon: Icons.school_outlined,
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: EducationSection(),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 36)),
+
+              // ────── TECHNICAL SKILLS ──────
+              SliverToBoxAdapter(
+                key: _techKey,
+                child: _buildSectionHeader(
+                  "Technical Skills",
+                  icon: Icons.code_outlined,
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: SkillsSection(),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 36)),
+
+              // ────── SOFT SKILLS ──────
+              SliverToBoxAdapter(
+                key: _softKey,
+                child: _buildSectionHeader(
+                  "Soft Skills",
+                  icon: Icons.handshake_outlined,
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: SoftSkillsSection(),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 36)),
+
+              // ―───── LANGUAGES ──────
+              SliverToBoxAdapter(
+                key: _langKey,
+                child: _buildSectionHeader(
+                  "Languages",
+                  icon: Icons.language_outlined,
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: LanguagesSection(),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 36)),
+
+              // ────── PROJECTS ──────
+              SliverToBoxAdapter(
+                key: _projKey,
+                child: _buildProjectsSection(context),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 36)),
+
+              // ────── COURSES ──────
+              SliverToBoxAdapter(
+                key: _courseKey,
+                child: _buildSectionHeader(
+                  "Courses",
+                  icon: Icons.menu_book_outlined,
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: CoursesSection(),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            ],
           ),
         ),
       ),
@@ -626,21 +780,12 @@ class SoftSkillsSection extends StatelessWidget {
         children: skills
             .map(
               (s) => Chip(
-            avatar: Icon(
-              s.$2,
-              size: 18,
-              color: Colors.tealAccent,
-            ),
-            backgroundColor: Colors.white10,
-            label: Text(
-              s.$1,
-              style: const TextStyle(color: Colors.white),
-            ),
-            shape: StadiumBorder(
-              side: BorderSide(color: Colors.white24),
-            ),
-          ),
-        )
+                avatar: Icon(s.$2, size: 18, color: Colors.tealAccent),
+                backgroundColor: Colors.white10,
+                label: Text(s.$1, style: const TextStyle(color: Colors.white)),
+                shape: StadiumBorder(side: BorderSide(color: Colors.white24)),
+              ),
+            )
             .toList(),
       ),
     );
@@ -656,10 +801,7 @@ class LanguagesSection extends StatelessWidget {
       children: [
         Expanded(
           flex: 2,
-          child: Text(
-            name,
-            style: const TextStyle(color: Colors.white),
-          ),
+          child: Text(name, style: const TextStyle(color: Colors.white)),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -756,9 +898,9 @@ class _ProjectVideoDemoState extends State<ProjectVideoDemo> {
                 : 16 / 9,
             child: _controller.value.isInitialized
                 ? GestureDetector(
-              onTap: _togglePlay,
-              child: VideoPlayer(_controller),
-            )
+                    onTap: _togglePlay,
+                    child: VideoPlayer(_controller),
+                  )
                 : const Center(child: CircularProgressIndicator()),
           ),
           // Controls
@@ -777,8 +919,7 @@ class _ProjectVideoDemoState extends State<ProjectVideoDemo> {
             child: Row(
               children: [
                 IconButton(
-                  tooltip:
-                  _controller.value.isPlaying ? 'Pause' : 'Play',
+                  tooltip: _controller.value.isPlaying ? 'Pause' : 'Play',
                   icon: Icon(
                     _controller.value.isPlaying
                         ? Icons.pause_circle_filled
@@ -813,6 +954,7 @@ class _HoverScale extends StatefulWidget {
   @override
   State<_HoverScale> createState() => _HoverScaleState();
 }
+
 // ==================== 🔹 Animated Subtitle ====================
 class AnimatedSubtitle extends StatelessWidget {
   const AnimatedSubtitle({super.key});
